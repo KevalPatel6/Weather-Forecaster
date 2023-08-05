@@ -1,0 +1,7 @@
+Done
+
+
+To Do
+1. Populate html files with sections/divs
+2. Watch video and follow along 
+3. Map out what needs to be done after
