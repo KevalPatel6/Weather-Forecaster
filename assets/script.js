@@ -9,22 +9,19 @@ let cityDataList = document.querySelector('#city-weather-data');
 //--------------------Event Listener for search then uses API to get information on that city//
 column1Container.addEventListener('click', function search(event) {
     if (event.target === document.querySelector('button')) {
-        cityDisplay.textContent = cityInput.value + "    (" + dayjs().format('M/DD/YYYY') + ")"
-
+        
         fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityInput.value}}&limit=5&appid=cadb2b964c2c86cd32342e930ae11b93`)
-            .then(response => response.json())
-            .then(citiesFound => {
-                let firstCity = citiesFound[0]
-
-                return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${firstCity.lat}&lon=${firstCity.lon}&appid=cadb2b964c2c86cd32342e930ae11b93&units=imperial`)
-            })
+        .then(response => response.json())
+        .then(citiesFound => {
+            let firstCity = citiesFound[0]
+            
+            return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${firstCity.lat}&lon=${firstCity.lon}&appid=cadb2b964c2c86cd32342e930ae11b93&units=imperial`)
+        })
         .then(response => response.json())
         .then(weatherData => {
-           console.log(weatherData)
-            
-           
-            
-        
+            cityDisplay.textContent = cityInput.value + "    (" + dayjs().format('M/DD/YYYY') + ")"
+            iconRender(weatherData.weather[0].icon, weatherData.weather[0].description)
+            console.log(weatherData)
             emptyData();
             createWeatherDataElements(weatherData.main.temp, weatherData.wind.speed, weatherData.main.humidity);            
            
@@ -52,6 +49,7 @@ previousCitiesList.append(buttonEl)
 
 function createFiveDayForecastCards() {
 
+
 }
 
 function emptyData () {
@@ -72,4 +70,14 @@ function createWeatherDataElements(x, y, z) {
     humidityEl.textContent = "Humidity: " + z + "%"
     cityDataList.append(humidityEl)
            
+}
+
+function iconRender(iconID, iconDesc){
+    
+    let imgEl = document.createElement('img')
+    imgEl.setAttribute('src', `https://openweathermap.org/img/wn/${iconID}@2x.png`)
+    imgEl.setAttribute('alt', iconDesc)
+    cityDisplay.append(imgEl)
+
+
 }
