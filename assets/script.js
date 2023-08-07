@@ -4,12 +4,18 @@ let cityDisplay = document.getElementById('city-name');
 let previousCitiesList = document.getElementById('previous-cities-search');
 let cityDataList = document.querySelector('#city-weather-data');
 let allCardsContainer = document.getElementById('all-cards-container')
+let previousSearchArray = [];
+localStorage.setItem('cities', previousSearchArray)
 //-----------------------Fetch using Open Weather API for CITY NAME 
 
 
 //--------------------Event Listener for search then uses API to get information on that city//
 column1Container.addEventListener('click', function search(event) {
     if (event.target === document.querySelector('#search-button')) {
+        event.preventDefault();
+        createButtonsAndStore(cityInput.value);
+
+       
 
         fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${cityInput.value}}&limit=5&appid=91ea62a2bafa882dacaf79bb891172d8`)
             .then(response => response.json())
@@ -39,7 +45,7 @@ column1Container.addEventListener('click', function search(event) {
                 let temp = weatherData.main.temp
                 let windSpeed = weatherData.wind.speed
                 let humidity = weatherData.main.humidity
-                iconRender(iconNum, iconDesc)
+                iconRender(iconNum, iconDesc, cityDisplay)
 
             
                 //-------------------Dont need above console log, remember to delete----------------------//
@@ -55,35 +61,61 @@ column1Container.addEventListener('click', function search(event) {
         
             .then(response => response.json())
             .then(forecastData =>{
-                console.log(forecastData)
+              
                
 
                 createForecastCards()
 
                
                 renderForecastInfo(forecastData)
+               
                 
                 
 
             })
         //-------------------------------------Add button for each search------------------------------//
 
-        let buttonEl = document.createElement('button')
-        buttonEl.textContent = cityInput.value
-        buttonEl.className = `w-100 btn-md btn-secondary my-3`
-        buttonEl.id = cityInput.value
-        buttonEl.setAttribute("type", "button")
-        previousCitiesList.append(buttonEl)
-    //--------------------------------------Local Storage-------------------------------------//
+function createButtonsAndStore(x){
+    let buttonEl = document.createElement('button')
+    buttonEl.textContent = x
+    buttonEl.className = `w-100 btn-md btn-secondary my-3`
+    buttonEl.id = x
+    buttonEl.setAttribute("type", "button")
+    previousCitiesList.append(buttonEl)
+
+   
+
+    localStorage.setItem('cities', JSON.stringify(buttonEl.textContent))
+    
+
+
+}
+
+
+//-------------------------------------Remove button from list if it exceeds a certain length-------------//
+    
+//--------------------------------------Local Storage for buttons-------------------------------------//
+
+
+
+
+}
+})
+
+//------------------------------------Functions----------------------------------------------//
+// function loadFromStorage() {
+//                     //------Can make this function expression-----//
+//     let previousSearch = parse.JSON(localStorage.getItem() || [])
 
     
-    }
-})
+
+
+
 
 function renderForecastInfo(forecastData){
     for (let i = 1; i < 6; i++) {
         
-        let dayInfo = forecastData.list[8*i]
+        let dayInfo = forecastData.list[(8*i) -2]
         let cardDate = document.querySelector(`.card-header-${i}`)
         let cardIcon = document.querySelector(`.icon-${i}`)
         let cardTemp = document.querySelector(`.temp-${i}`)
@@ -91,33 +123,34 @@ function renderForecastInfo(forecastData){
         let cardHumidity = document.querySelector(`.humidity-${i}`)
 
         cardDate.textContent = dayjs(dayInfo.dt_txt).format('M/DD/YY  h:mm A')
-    
-        // card1Icon.textContent = day1Info
-        cardTemp.textContent = dayInfo.main.temp + "°F"
-        cardWind.textContent = dayInfo.wind.speed + " MPH"
-        cardHumidity.textContent = dayInfo.main.humidity + "%"
+
+        cardIcon.textContent = `Icon`
+        iconRender(dayInfo.weather[0].icon, dayInfo.weather[0].description,cardIcon)
+        cardTemp.textContent = "Temp: " + dayInfo.main.temp + "°F"
+        cardWind.textContent = "Wind: " + dayInfo.wind.speed + " MPH"
+        cardHumidity.textContent = "Humidity: " + dayInfo.main.humidity + "%"
 
 
     }
 }
 
 
-//--------------------------Input saved as a button--------------------//
+
 
 
 //-----------------------Create fetch for buttons based on inputs-------------------//
-    let selectedButton = document.querySelector(`#${cityInput.value}`)
-    column1Container.addEventListener('click', function(event){
-        if(event.target===selectedButton){
+    // let selectedButton = document.querySelector(`#${cityInput.value}`)
+    // column1Container.addEventListener('click', function(event){
+    //     if(event.target===selectedButton){
            
-    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${selectedButton}}&limit=5&appid=91ea62a2bafa882dacaf79bb891172d8`)
-        .then(response => response.json())
-        .then(citiesFoundByButton =>{
-            console.log(citiesFoundByButton)
+    // fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${selectedButton}}&limit=5&appid=91ea62a2bafa882dacaf79bb891172d8`)
+    //     .then(response => response.json())
+    //     .then(citiesFoundByButton =>{
+    //         console.log(citiesFoundByButton)
 
-        })
-        }
-    })
+    //     })
+    //     }
+    // })
 
 
 
@@ -139,7 +172,7 @@ function createForecastCards() {
 
 
         let cardBox = document.createElement('section')
-        cardBox.className = `card-${i}`
+        cardBox.className = ` col card-${i}`
         cardBox.setAttribute('style', 'width: 18rem;')
         allCardsContainer.append(cardBox)
 
@@ -198,11 +231,11 @@ function createWeatherDataElements(x, y, z) {
 
 }
 
-function iconRender(iconID, iconDesc) {
+function iconRender(iconID, iconDesc,whereAppend) {
 
     let imgEl = document.createElement('img')
     imgEl.setAttribute('src', `https://openweathermap.org/img/wn/${iconID}@2x.png`)
     imgEl.setAttribute('alt', iconDesc)
-    cityDisplay.append(imgEl)
+    whereAppend.append(imgEl)
 
 }
