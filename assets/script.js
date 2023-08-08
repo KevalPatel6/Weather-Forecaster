@@ -22,7 +22,6 @@ column1Container.addEventListener('click', search)
 function search(event) {
     if (event.target === document.querySelector('#search-button')) {
         event.preventDefault();
-        pushAndSave(cityInput.value);
         fetchData(cityInput.value);
         cityDataContainer.classList.add('border border-black')
 
@@ -93,6 +92,7 @@ function fetchData(input) {
         .then(weatherData => {
             console.log(weatherData)
             cityDisplay.textContent = weatherData.name + ", " + weatherData.sys.country + "     (" + dayjs().format('M/DD/YYYY') + ")" + "  "
+            pushAndSave(weatherData.name);
             createButtons(weatherData.name);
             cityDisplay.classList.remove('text-black-50')
 
