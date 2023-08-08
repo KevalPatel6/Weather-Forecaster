@@ -6,51 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Forecast</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/style.css">
 
 
 </head>
 
 <body class="vh-100 w-100">
     <header>
-        <h1 class="bg-primary bg-gradient text-white display-6 text-center p-">Weather Dashboard</h1>
+        <h1 class="bg-primary bg-gradient text-white display-6 text-center p-" id="header">Weather Dashboard</h1>
     </header>
 
-    <div class="container w-100 vh-100">
+    <div class="w-100 vh-100">
         <div class="row">
-            <div id='column-1' class="col-2 vh-100">
-                Column1
+            <div id='column-1' class="col-2 vh-100 ps-4">
+                
                 <div class="row- border-bottom">
                     <h4 class="display-12 text-start p-0 ">Search for a City:</h4>
                     <input id='city-input' class="form-control form-control mx-auto" type="text"
                         placeholder="Enter City Name" aria-label=".form-control-lg example">
                     <div class="d-grid">
-                        <button id='search-button' class="btn-md btn-primary my-3" type="button">Search</button>
+                        <button id='search-button' class="btn-lg btn-primary my-3 border-0" type="button">Search</button>
                     </div>
                 </div>
 
                 <div class="row mt-3">
-                    Previous Cities Search
-                    <ul id="previous-cities-search">
+          
+                    <ol id="previous-cities-search">
 
 
-                    </ul>
+                    </ol>
                 </div>
 
 
             </div>
 
             <div class="col-10 px-4 vh-100">
-                Column2
+                
                 <section id="city-input-information container" class="col bd-highlight border-dark">
-                    <h2 id="city-name" class="ps-1">City Display</h2>
-                    <ul id="city-weather-data">Data List for City
+                    <h2 id="city-name" class="ps-1"></h2>
+                    <ol id="city-weather-data" reversed>
 
-                    </ul>
+                    </ol>
                 </section>
                 <div id="5-day-forecast-container" class="row">
                     <h4>5-Day Forecast:</h4>
                     
-                    <div id='all-cards-container'>Cards Container
+                    <div id='all-cards-container' class="d-flex justify-content-around w-100">
 
                         
                     
