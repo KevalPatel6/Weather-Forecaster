@@ -22,6 +22,7 @@ column1Container.addEventListener('click', search)
 function search(event) {
     if (event.target === document.querySelector('#search-button')) {
         event.preventDefault();
+        pushAndSave(cityInput.value);
         fetchData(cityInput.value);
         cityDataContainer.classList.add('border border-black')
 
@@ -30,7 +31,6 @@ function search(event) {
         }
         
         
-        pushAndSave(cityInput.value);
     }
 
     if (event.target===clearHistory){
