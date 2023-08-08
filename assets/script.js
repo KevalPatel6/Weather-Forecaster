@@ -1,14 +1,16 @@
+//-----------------Global Variables------------------//
 let cityInput = document.getElementById('city-input');
+let cityDataContainer = document.getElementById('city-input-information')
 let column1Container = document.getElementById('column-1');
 let cityDisplay = document.getElementById('city-name');
 let previousCitiesList = document.getElementById('previous-cities-search');
 let cityDataList = document.querySelector('#city-weather-data');
 let allCardsContainer = document.getElementById('all-cards-container')
 let previousSearchArray = JSON.parse(localStorage.getItem('cities')) || [];
-// localStorage.setItem('cities', previousSearchArray)
-//-----------------------Fetch using Open Weather API for CITY NAME 
 
 
+
+//--------Loop loads previous searches from local Storage------------//
 for (let i = 0; i < previousSearchArray.length; i++) {
     createButtons(previousSearchArray[i])
 
@@ -23,12 +25,7 @@ function search(event) {
         createButtons(cityInput.value);
         pushAndSave(cityInput.value);
         fetchData(cityInput.value);
-
-
-
-
-
-
+        cityDataContainer.classList.add('border border-black')
     }
 }
 
@@ -77,6 +74,7 @@ function fetchData(input) {
         .then(weatherData => {
             console.log(weatherData)
             cityDisplay.textContent = input + ", " + weatherData.sys.country + "     (" + dayjs().format('M/DD/YYYY') + ")" + "  "
+            cityDisplay.classList.remove('text-black-50')
 
             let iconNum = weatherData.weather[0].icon
             let iconDesc = weatherData.weather[0].description
@@ -112,88 +110,55 @@ function fetchData(input) {
 
 
 function iconRender(iconID, iconDesc, whereAppend) {
-
+    
     let imgEl = document.createElement('img')
     imgEl.setAttribute('src', `https://openweathermap.org/img/wn/${iconID}@2x.png`)
     imgEl.setAttribute('alt', iconDesc)
     whereAppend.append(imgEl)
+    
+}
+
+function emptyData(removeInnerHTML) {
+    removeInnerHTML.innerHTML = ''
+}
+
+function createWeatherDataElements(x, y, z) {
+
+    let temperatureEl = document.createElement('li')
+    temperatureEl.textContent = "Temp: " + x + "°F"
+    cityDataList.append(temperatureEl)
+
+    let windEl = document.createElement('li')
+    windEl.textContent = "Wind: " + y + " MPH"
+    cityDataList.append(windEl)
+
+    let humidityEl = document.createElement('li')
+    humidityEl.textContent = "Humidity: " + z + "%"
+    cityDataList.append(humidityEl)
 
 }
 
-function renderForecastInfo(forecastData) {
-    for (let i = 1; i < 6; i++) {
-
-        let dayInfo = forecastData.list[(8 * i) - 2]
-        let cardDate = document.querySelector(`.card-header-${i}`)
-        let cardIcon = document.querySelector(`.icon-${i}`)
-        let cardTemp = document.querySelector(`.temp-${i}`)
-        let cardWind = document.querySelector(`.wind-${i}`)
-        let cardHumidity = document.querySelector(`.humidity-${i}`)
-
-        cardDate.textContent = dayjs(dayInfo.dt_txt).format('M/DD/YY')
-
-        cardIcon.textContent = ``
-        iconRender(dayInfo.weather[0].icon, dayInfo.weather[0].description, cardIcon)
-        cardIcon.className = "text-center"
-        cardTemp.textContent = "Temp: " + dayInfo.main.temp + "°F"
-        cardWind.textContent = "Wind: " + dayInfo.wind.speed + " MPH"
-        cardHumidity.textContent = "Humidity: " + dayInfo.main.humidity + "%"
-
-
-    }
-}
-
-
-
-
-//-----------------------Create fetch for buttons based on inputs-------------------//
-// let selectedButton = document.querySelector(`#${cityInput.value}`)
-// column1Container.addEventListener('click', function(event){
-//     if(event.target===selectedButton){
-
-// fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${selectedButton}}&limit=5&appid=91ea62a2bafa882dacaf79bb891172d8`)
-//     .then(response => response.json())
-//     .then(citiesFoundByButton =>{
-//         console.log(citiesFoundByButton)
-
-//     })
-//     }
-// })
-
-
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------//
-
-//---------------global----//
-//--------------------------Create 1 Cards ----------------------------//
 function createForecastCards() {
-
+    
     for (let i = 1; i < 6; i++) {
-
-
-
+        
+        
+        
         let cardBox = document.createElement('section')
         cardBox.className = `card-${i}`
         cardBox.setAttribute('style', 'width: 18rem;')
         allCardsContainer.append(cardBox)
-
-
+        
+        
         let cardHeader = document.createElement('div')
         cardHeader.className = `bg-dark text-center text-white card-header-${i}`
         cardHeader.textContent = "Date"
         cardBox.append(cardHeader)
-
+        
         let cardListEl = document.createElement('ul')
         cardListEl.className = 'bg-dark list-group-item'
         cardBox.append(cardListEl)
-
+        
         let iconLine = document.createElement('li')
         iconLine.className = `bg-dark text-white list-group-item icon-${i}`
         iconLine.textContent = "Icon"
@@ -219,23 +184,27 @@ function createForecastCards() {
 
 }
 
-function emptyData(removeInnerHTML) {
-    removeInnerHTML.innerHTML = ''
+function renderForecastInfo(forecastData) {
+    for (let i = 1; i < 6; i++) {
+        
+        let dayInfo = forecastData.list[(8 * i) - 2]
+        let cardDate = document.querySelector(`.card-header-${i}`)
+        let cardIcon = document.querySelector(`.icon-${i}`)
+        let cardTemp = document.querySelector(`.temp-${i}`)
+        let cardWind = document.querySelector(`.wind-${i}`)
+        let cardHumidity = document.querySelector(`.humidity-${i}`)
+        
+        cardDate.textContent = dayjs(dayInfo.dt_txt).format('M/DD/YY')
+        
+        cardIcon.textContent = ``
+        iconRender(dayInfo.weather[0].icon, dayInfo.weather[0].description, cardIcon)
+        cardIcon.className = "text-center"
+        cardTemp.textContent = "Temp: " + dayInfo.main.temp + "°F"
+        cardWind.textContent = "Wind: " + dayInfo.wind.speed + " MPH"
+        cardHumidity.textContent = "Humidity: " + dayInfo.main.humidity + "%"
+        
+        
+    }
 }
 
-function createWeatherDataElements(x, y, z) {
-
-    let temperatureEl = document.createElement('li')
-    temperatureEl.textContent = "Temp: " + x + "°F"
-    cityDataList.append(temperatureEl)
-
-    let windEl = document.createElement('li')
-    windEl.textContent = "Wind: " + y + " MPH"
-    cityDataList.append(windEl)
-
-    let humidityEl = document.createElement('li')
-    humidityEl.textContent = "Humidity: " + z + "%"
-    cityDataList.append(humidityEl)
-
-}
 
