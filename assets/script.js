@@ -7,7 +7,7 @@ let previousCitiesList = document.getElementById('previous-cities-search');
 let cityDataList = document.querySelector('#city-weather-data');
 let allCardsContainer = document.getElementById('all-cards-container')
 let previousSearchArray = JSON.parse(localStorage.getItem('cities')) || [];
-
+let clearHistory = document.getElementById('clear-history')
 
 
 //--------Loop loads previous searches from local Storage------------//
@@ -22,10 +22,20 @@ column1Container.addEventListener('click', search)
 function search(event) {
     if (event.target === document.querySelector('#search-button')) {
         event.preventDefault();
-        createButtons(cityInput.value);
-        pushAndSave(cityInput.value);
         fetchData(cityInput.value);
         cityDataContainer.classList.add('border border-black')
+
+        if(cityDisplay.textContent==="You must enter a valid city name"){
+            
+        }
+        
+        
+        pushAndSave(cityInput.value);
+    }
+
+    if (event.target===clearHistory){
+        localStorage.clear()
+        emptyData(previousCitiesList)
     }
 }
 
@@ -64,16 +74,26 @@ function fetchData(input) {
     fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}}&limit=5&appid=91ea62a2bafa882dacaf79bb891172d8`)
         .then(response => response.json())
         .then(citiesFound => {
-
-            let firstCity = citiesFound[0]
-
-            return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${firstCity.lat}&lon=${firstCity.lon}&appid=91ea62a2bafa882dacaf79bb891172d8&units=imperial`)
+            console.log(citiesFound)
+            if(!citiesFound.length){
+                cityDisplay.textContent = "You must enter a valid city name"
+                emptyData(cityDataList)
+                emptyData(allCardsContainer)
+                return
+            }
+            else{
+                let firstCity = citiesFound[0]
+                
+                
+                return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${firstCity.lat}&lon=${firstCity.lon}&appid=91ea62a2bafa882dacaf79bb891172d8&units=imperial`)
+            }
 
         })
         .then(response => response.json())
         .then(weatherData => {
             console.log(weatherData)
-            cityDisplay.textContent = input + ", " + weatherData.sys.country + "     (" + dayjs().format('M/DD/YYYY') + ")" + "  "
+            cityDisplay.textContent = weatherData.name + ", " + weatherData.sys.country + "     (" + dayjs().format('M/DD/YYYY') + ")" + "  "
+            createButtons(weatherData.name);
             cityDisplay.classList.remove('text-black-50')
 
             let iconNum = weatherData.weather[0].icon
@@ -206,5 +226,3 @@ function renderForecastInfo(forecastData) {
         
     }
 }
-
-

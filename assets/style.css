@@ -2,6 +2,7 @@
 
 #previous-cities-search {
     transform: rotate(180deg);
+    text-align: center;
 }
 
 .created-buttons {
@@ -10,4 +11,13 @@
 
 #city-name{
     margin-bottom: -1rem;
+}
+
+#clear-history{
+    text-align: center;
+    width: 85%;
+    margin-left: 25px;
+    display: flex;
+    justify-content: center;
+    font-size: 14pt;
 }
